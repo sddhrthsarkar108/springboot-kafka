@@ -1,0 +1,10 @@
+dependencies {
+    implementation project(':common')
+}
+
+tasks.register('buildDockerImage', Exec) {
+    commandLine 'docker', 'build', '-t', 'mod2', '.'
+    workingDir project.projectDir
+}
+
+//tasks.build.dependsOn tasks.buildDockerImage

@@ -1,0 +1,12 @@
+### Folders ###
+build
+.gradle
+.idea
+.vscode/
+bin/
+
+### Files ###
+!gradle/wrapper/gradle-wrapper.jar
+*.class
+
+

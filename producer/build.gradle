@@ -1,10 +1,44 @@
 dependencies {
     implementation project(':common')
+    
+    // Add Kafka dependencies
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.apache.kafka:kafka-clients'
+    
+    // Add Springdoc OpenAPI dependencies
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
 }
 
-tasks.register('buildDockerImage', Exec) {
-    commandLine 'docker', 'build', '-t', 'mod1', '.'
-    workingDir project.projectDir
+// Configure the bootJar task to create a properly named jar
+bootJar {
+    archiveBaseName = 'producer'
+    archiveClassifier = ''
 }
 
-//tasks.build.dependsOn tasks.buildDockerImage
+// Configure Jib for Docker image building
+jib {
+    from {
+        image = 'amazoncorretto:21.0.2-al2023-headless'
+    }
+    to {
+        image = "com.example/producer:${project.version}"
+    }
+    container {
+        jvmFlags = [
+//            '-Xms256m',
+//            '-Xmx512m',
+//            '-XX:+UseG1GC',
+//            '-XX:+UseStringDeduplication',
+//            '-Djava.security.egd=file:/dev/./urandom'
+        ]
+        ports = ['8081']
+        environment = [
+//            'SPRING_PROFILES_ACTIVE': 'docker',
+            'SERVER_PORT': '8081',
+            'SPRING_KAFKA_BOOTSTRAP_SERVERS': 'kafka:9092'
+        ]
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+    }
+    // Specify the main class to improve build speed
+    container.mainClass = 'com.sbtl1.producer.Producer'
+} 

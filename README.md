@@ -25,18 +25,49 @@ This project demonstrates how to handle long-running event processing with Kafka
 
 ## Running the Application
 
-### Start Kafka
+### Using Docker (Recommended)
+
+The application can be built and run using Docker Compose with a single command:
 
 ```shell
-docker-compose up -d
+./gradlew dockerComposeUp
 ```
 
-### Build and Run the Application
+This will:
+1. Build the application
+2. Create Docker images for the producer and consumer
+3. Start all services (Kafka, Zookeeper, Kafka UI, Producer, Consumer)
+
+To stop all services:
+
+```shell
+./gradlew dockerComposeDown
+```
+
+### Building Docker Images Manually
+
+If you want to build the Docker images without starting the services:
+
+```shell
+./gradlew buildDockerImages
+```
+
+This will create Docker images for both the producer and consumer.
+
+### Running Without Docker
+
+If you prefer to run the application without Docker:
 
 ```shell
 ./gradlew clean build
 java -jar producer/build/libs/producer-0.0.1-SNAPSHOT.jar  # Run Producer
 java -jar consumer/build/libs/consumer-0.0.1-SNAPSHOT.jar  # Run Consumer
+```
+
+Note: You'll still need Kafka running, which you can start with:
+
+```shell
+docker-compose up -d kafka zookeeper kafka-ui
 ```
 
 ## Testing the Application
